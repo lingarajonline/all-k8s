@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: convo
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: convo
+    spec:
+      containers:
+      - name: convo-container
+        # Should match the name of your Docker image in your repository
+        image: registry.ng.bluemix.net/rajbag/conversation:v1
+        ports:
+        - containerPort: 3000
+        env:
+        - name: WORKSPACE_ID
+          valueFrom:
+            secretKeyRef:
+              # Should match the name of your Kubernetes secret
+              name: convo-secret
+              key: WORKSPACE_ID
+        - name: CONVERSATION_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: convo-secret
+              key: CONVERSATION_USERNAME
+        - name: CONVERSATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: convo-secret
+              key: CONVERSATION_PASSWORD
